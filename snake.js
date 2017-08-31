@@ -1,4 +1,4 @@
-$(document).ready(funtion(){
+$(document).ready(function(){
 	// Setting up Canvas
 	var canvas = document.getElementById("canvas");
 	var context = canvas.getContext("2d");
