@@ -10,7 +10,7 @@ $(document).ready(function(){
 	// Setting up Grids and Snake's body
 	var xRows = [], yRows = [];
 	// Storing the coordinates of body parts in pairs of [x, y] for each entry
-	var snakeBody = [];
+	var snakeBody = [[7, 7]];
 
 	// Setting up Keys
 	var keyPressed = null;
