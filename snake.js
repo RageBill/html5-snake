@@ -59,7 +59,7 @@ $(document).ready(function(){
 
 			do {
 				collided = false;
-				for(var i = 0; i < snake.tail; i++){
+				for(var i = 0; i < player.tail; i++){
 					if(candy.x == snakeBody[i][0] && candy.y == snakeBody[i][1]){
 						collided = true;
 						candy.x = Math.floor(Math.random() * gridNum);
