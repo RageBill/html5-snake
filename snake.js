@@ -7,8 +7,6 @@ $(document).ready(function(){
 	var gridNum = 20;
 	var gridSize = canvas.width / gridNum;
 
-	// Setting up Grids and Snake's body
-	var xRows = [], yRows = [];
 	// Storing the coordinates of body parts in pairs of [x, y] for each entry
 	var snakeBody = [[7, 7]];
 
@@ -42,10 +40,10 @@ $(document).ready(function(){
 	function update(){
 		// Changing snake's movement direction
 		if (keyPressed){
-			if(keyPress == rightKey && player.direction != 1) player.direction = 0;
-			if(keyPress == leftKey && player.direction != 0) player.direction = 1;
-			if(keyPress == upKey && player.direction != 3) player.direction = 2;
-			if(keyPress == downKey && player.direction != 2) player.direction = 3;
+			if(keyPressed == rightKey && player.direction != 1) player.direction = 0;
+			if(keyPressed == leftKey && player.direction != 0) player.direction = 1;
+			if(keyPressed == upKey && player.direction != 3) player.direction = 2;
+			if(keyPressed == downKey && player.direction != 2) player.direction = 3;
 		}
 
 		// Spawning Candy
@@ -80,39 +78,46 @@ $(document).ready(function(){
 		}
 
 		// Check if player eats itself
-		for(var i = 0; i < player.tail; i++){
-			if(player.x == snakeBody[i][0] && player.y == snakeBody[i][1]){
-				player.alive = false;
+		if(player.tail > 1){
+			for(var i = 1; i < player.tail; i++){
+				if(player.x == snakeBody[i][0] && player.y == snakeBody[i][1]){
+					player.alive = false;
+					clearInterval(updates);
+				}
 			}
 		}
 
 		// Check if player hits border
 		if(player.x >= gridNum || player.x < 0 || player.y >= gridNum || player.y < 0){
 			player.alive = false;
+			clearInterval(updates);
 		}
 
 		// Moving the player
-		if(true){
-			snakeBody.insert(0, [player.x, player.y]);
+		snakeBody.insert(0, [player.x, player.y]);
+		while(snakeBody.length > player.tail + 1){
+			snakeBody.pop();
+		}
 
-			switch(player.direction){
-				// Right
-				case 0: 
-				player.x += 1; break;
-				// Left
-				case 1:
-				player.x -= 1; break;
-				// Up
-				case 2:
-				player.y -= 1; break;
-				// Down
-				case 3:
-				player.y += 1; break;
-			}
+		switch(player.direction){
+			// Right
+			case 0: 
+			player.x += 1; break;
+			// Left
+			case 1:
+			player.x -= 1; break;
+			// Up
+			case 2:
+			player.y -= 1; break;
+			// Down
+			case 3:
+			player.y += 1; break;
 		}
 
 		// Call the draw function after updating
-		draw();
+		if(player.alive){
+			draw();
+		}
 	}
 
 	// Draw the actual outcome
@@ -120,14 +125,20 @@ $(document).ready(function(){
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		// Drawing the candy
 		context.fillStyle = "red";
-		context.fillRect(candy.x * gridSize, canvas.y * gridSize, gridSize, gridSize);
+		context.fillRect(candy.x * gridSize, candy.y * gridSize, gridSize, gridSize);
 		// Drawing the snake
-		context.fillStyle = "black";
 		for(var i = 0; i < player.tail; i++){
+			context.fillStyle = "black";
 			context.fillRect(snakeBody[i][0] * gridSize, snakeBody[i][1] * gridSize, gridSize, gridSize);
 		}
 	}
 
 	// Starting the updates
-	setInterval(update, 100);
+	update();
+	var updates = setInterval(update, 100);
+
+	// Keydown events
+	$(window).on("keydown" ,function(event) {
+	  keyPressed = event.which;
+	});
 });
